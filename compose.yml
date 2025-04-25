@@ -25,10 +25,7 @@ services:
     profiles: ["pod"]
     build: &build
       context: .
-      #dockerfile: ide.Dockerfile
-      dockerfile: generated.Dockerfile
-      #args:
-      #  - USER_NAME=${USER_NAME}  
+      dockerfile: generated.Dockerfile 
     ports:
       - ${WEB_IDE_HTTP_PORT}:3000
     environment: &environment
@@ -39,17 +36,12 @@ services:
       - WEB_IDE_HTTP_PORT=${WEB_IDE_HTTP_PORT}
       - GIT_USER_NAME=${GIT_USER_NAME}
       - GIT_USER_EMAIL=${GIT_USER_EMAIL}
-      - PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME}
-      - PUBLIC_KEY_NAME=${PUBLIC_KEY_NAME}
       - SSH_PUBLIC_KEY=${SSH_PUBLIC_KEY}
       - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
       - GIT_HOST=${GIT_HOST}
-      #- USER_NAME=${USER_NAME}
     volumes: &volumes
       - ./workspace:/home/workspace:cached
-      #- ./tools:/home/tools
       - ./tasks:/home/tasks
-      #- ./keys:/home/${USER_NAME}/.ssh
       - ./keys:/home/openvscode-server/.ssh
       - type: bind
         source: /var/run/docker.sock

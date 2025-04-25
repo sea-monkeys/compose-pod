@@ -1,5 +1,3 @@
 workspace/
 keys/
-ssh-keys
-backup/
 .env

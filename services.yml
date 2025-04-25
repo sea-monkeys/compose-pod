@@ -2,11 +2,9 @@ services:
 
   ollama-service-with-gpu:
     profiles: ["gpu"]
-    image: ollama/ollama:0.6.5
+    image: ollama/ollama:0.6.6
     volumes:
       - ollama-data:/root/.ollama
-    #ports:
-    #  - 11436:11434
     deploy:
       resources:
         reservations:
@@ -17,11 +15,9 @@ services:
 
   ollama-service:
     profiles: ["pod"]
-    image: ollama/ollama:0.6.5
+    image: ollama/ollama:0.6.6
     volumes:
       - ollama-data:/root/.ollama
-    #ports:
-    #  - 11435:11434
 
   download-local-llm:
     profiles: ["pod"]
@@ -29,15 +25,11 @@ services:
     entrypoint: |
       sh -c '      
       curl "http://ollama-service:11434/api/pull" -d @- << EOF
-      {"name": "qwen2.5:3b"}
+      {"name": "qwen2.5:0.5b"}
       EOF
 
       curl "http://ollama-service:11434/api/pull" -d @- << EOF
       {"name": "qwen2.5:1.5b"}
-      EOF
-
-      curl "http://ollama-service:11434/api/pull" -d @- << EOF
-      {"name": "qwen2.5:0.5b"}
       EOF
       '
     depends_on:
@@ -50,15 +42,11 @@ services:
     entrypoint: |
       sh -c '      
       curl "http://ollama-service-with-gpu:11434/api/pull" -d @- << EOF
-      {"name": "qwen2.5:3b"}
+      {"name": "qwen2.5:0.5b"}
       EOF
 
       curl "http://ollama-service-with-gpu:11434/api/pull" -d @- << EOF
       {"name": "qwen2.5:1.5b"}
-      EOF
-
-      curl "http://ollama-service-with-gpu:11434/api/pull" -d @- << EOF
-      {"name": "qwen2.5:0.5b"}
       EOF
       '
     depends_on:

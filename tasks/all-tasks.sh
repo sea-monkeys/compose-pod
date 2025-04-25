@@ -7,11 +7,14 @@ set -e  # Exit immediately if any script returns a non-zero exit code
 echo "⏳ Running git configuration..."
 /home/tasks/git-configuration.sh
 
+echo "⏳ Clone git repository..."
+/home/tasks/clone-repository.sh
+
 echo "⏳ Setting up Oh My Bash..."
 /home/tasks/oh-my-bash.sh
 
-echo "⏳Installing extensions..."
-/home/tasks/extensions.sh
+#echo "⏳Installing extensions..."
+#/home/tasks/extensions.sh
 
 echo "🎉 All setup scripts completed successfully!"
 

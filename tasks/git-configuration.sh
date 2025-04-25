@@ -3,6 +3,8 @@
 # Git configuration
 # --------------------------------------
 USER_NAME=openvscode-server
+PRIVATE_KEY_NAME=git_repository_key
+PUBLIC_KEY_NAME=git_repository_key.pub
 echo "🚀 Initializing the environment..."
 
 echo "🤗 Configuring Git $USER_NAME"
@@ -33,20 +35,11 @@ else
     mkdir -p ~/.ssh &&
     [[ ! -z $SSH_PUBLIC_KEY  ]] &&
     echo $SSH_PUBLIC_KEY > /home/$USER_NAME/.ssh/$PUBLIC_KEY_NAME &&
-    chmod 644 /home/$USER_NAME/.ssh/$PUBLIC_KEY_NAME &&
+    #chmod 644 /home/$USER_NAME/.ssh/$PUBLIC_KEY_NAME &&
+    #chmod 600 /home/$USER_NAME/.ssh/$PUBLIC_KEY_NAME &&
     [[ ! -z $SSH_PRIVATE_KEY  ]] &&
     echo $SSH_PRIVATE_KEY | base64 -d > /home/$USER_NAME/.ssh/$PRIVATE_KEY_NAME &&
     chmod 600 /home/$USER_NAME/.ssh/$PRIVATE_KEY_NAME
 
-fi
-
-# --------------------------------------
-# Clone the project repository
-# --------------------------------------
-if [ -d "$HOME/$PROJECT_NAME" ]; then
-    echo "🙂 Project $PROJECT_NAME already exists"
-else
-    echo "🤗 Cloning project $PROJECT_NAME"
-    git clone $GIT_REPOSITORY $HOME/$PROJECT_NAME
 fi
 
