@@ -1,3 +1,5 @@
 workspace/
 keys/
 .env
+tmp/
+docs

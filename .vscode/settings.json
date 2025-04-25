@@ -9,7 +9,7 @@
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 1000,
     "workbench.tree.indent": 20,
-    "window.zoomLevel": 0,
+    "window.zoomLevel": 0.5,
     "[markdown]": {
         "editor.unicodeHighlight.ambiguousCharacters": false,
         "editor.unicodeHighlight.invisibleCharacters": false,
@@ -24,9 +24,9 @@
             "other": "off"
         }
     },
-    "markdown.preview.fontSize": 14,
+    "markdown.preview.fontSize": 16,
     "workbench.editorAssociations": {
-        //"*.md": "vscode.markdown.preview.editor"
+        "*.md": "vscode.markdown.preview.editor"
     },
     "[dockerfile]": {
         "editor.fontSize": 16,
