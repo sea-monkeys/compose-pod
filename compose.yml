@@ -1,0 +1,85 @@
+include:
+  - services.yml
+
+services:
+
+  # This is a helper service to generate the Dockerfile
+  # Define what you need into generate-dockerfile.sh
+  # and run it with:
+  # docker compose --profile generate up
+  dockerfile-generator:
+    profiles: ["generate"]
+    image: alpine:latest
+    volumes:
+      - ./docker:/docker
+      - ./:/output
+    entrypoint: 
+      - /bin/sh
+      - -c
+      - |
+        chmod +x /docker/*.sh
+        /docker/generate-dockerfile.sh
+
+  # docker compose --profile pod up --build
+  web-ide:
+    profiles: ["pod"]
+    build: &build
+      context: .
+      #dockerfile: ide.Dockerfile
+      dockerfile: generated.Dockerfile
+      #args:
+      #  - USER_NAME=${USER_NAME}  
+    ports:
+      - ${WEB_IDE_HTTP_PORT}:3000
+    environment: &environment
+      - MESSAGE=👋 Hello World 🌍
+      - GIT_REPOSITORY=${GIT_REPOSITORY}
+      - PROJECT_NAME=${PROJECT_NAME}
+      - REDIRECTION_HTTP_PORT=${REDIRECTION_HTTP_PORT}
+      - WEB_IDE_HTTP_PORT=${WEB_IDE_HTTP_PORT}
+      - GIT_USER_NAME=${GIT_USER_NAME}
+      - GIT_USER_EMAIL=${GIT_USER_EMAIL}
+      - PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME}
+      - PUBLIC_KEY_NAME=${PUBLIC_KEY_NAME}
+      - SSH_PUBLIC_KEY=${SSH_PUBLIC_KEY}
+      - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
+      - GIT_HOST=${GIT_HOST}
+      #- USER_NAME=${USER_NAME}
+    volumes: &volumes
+      - ./workspace:/home/workspace:cached
+      #- ./tools:/home/tools
+      - ./tasks:/home/tasks
+      #- ./keys:/home/${USER_NAME}/.ssh
+      - ./keys:/home/openvscode-server/.ssh
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    init: true
+    restart: unless-stopped
+
+  web-ide-tasks:
+    profiles: ["pod"]
+    depends_on:
+      web-ide:
+        condition: service_started
+    entrypoint: 
+      - /bin/bash
+      - -c
+      - |
+        chmod +x /home/tasks/*.sh
+        /home/tasks/all-tasks.sh
+    environment: *environment
+    build: *build       
+    volumes: *volumes
+
+  # A simple helper service to redirect to the web-ide service 
+  # opening the browser on the selected project
+  open-pod:
+    profiles: ["pod"]
+    build:
+      context: .
+      dockerfile: redirect.Dockerfile
+    environment: *environment
+    ports:
+      - ${REDIRECTION_HTTP_PORT}:${REDIRECTION_HTTP_PORT}
+

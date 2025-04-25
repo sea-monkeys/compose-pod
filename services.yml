@@ -1,0 +1,69 @@
+services:
+
+  ollama-service-with-gpu:
+    profiles: ["gpu"]
+    image: ollama/ollama:0.6.5
+    volumes:
+      - ollama-data:/root/.ollama
+    #ports:
+    #  - 11436:11434
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ollama-service:
+    profiles: ["pod"]
+    image: ollama/ollama:0.6.5
+    volumes:
+      - ollama-data:/root/.ollama
+    #ports:
+    #  - 11435:11434
+
+  download-local-llm:
+    profiles: ["pod"]
+    image: curlimages/curl:8.12.1
+    entrypoint: |
+      sh -c '      
+      curl "http://ollama-service:11434/api/pull" -d @- << EOF
+      {"name": "qwen2.5:3b"}
+      EOF
+
+      curl "http://ollama-service:11434/api/pull" -d @- << EOF
+      {"name": "qwen2.5:1.5b"}
+      EOF
+
+      curl "http://ollama-service:11434/api/pull" -d @- << EOF
+      {"name": "qwen2.5:0.5b"}
+      EOF
+      '
+    depends_on:
+      ollama-service:
+        condition: service_started
+
+  download-local-llm-with-gpu:
+    profiles: ["gpu"]
+    image: curlimages/curl:8.12.1
+    entrypoint: |
+      sh -c '      
+      curl "http://ollama-service-with-gpu:11434/api/pull" -d @- << EOF
+      {"name": "qwen2.5:3b"}
+      EOF
+
+      curl "http://ollama-service-with-gpu:11434/api/pull" -d @- << EOF
+      {"name": "qwen2.5:1.5b"}
+      EOF
+
+      curl "http://ollama-service-with-gpu:11434/api/pull" -d @- << EOF
+      {"name": "qwen2.5:0.5b"}
+      EOF
+      '
+    depends_on:
+      ollama-service-with-gpu:
+        condition: service_started
+
+volumes:
+  ollama-data:
