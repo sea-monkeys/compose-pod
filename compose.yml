@@ -1,5 +1,5 @@
-include:
-  - services.yml
+#include:
+#  - services.yml
 
 services:
 
@@ -37,23 +37,21 @@ services:
       - PROJECT_NAME=${PROJECT_NAME}
       - REDIRECTION_HTTP_PORT=${REDIRECTION_HTTP_PORT}
       - WEB_IDE_HTTP_PORT=${WEB_IDE_HTTP_PORT}
-      - GIT_USER_NAME=${GIT_USER_NAME}
-      - GIT_USER_EMAIL=${GIT_USER_EMAIL}
-      - PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME}
-      - PUBLIC_KEY_NAME=${PUBLIC_KEY_NAME}
-      - SSH_PUBLIC_KEY=${SSH_PUBLIC_KEY}
-      - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
-      - GIT_HOST=${GIT_HOST}
-      #- USER_NAME=${USER_NAME}
+      #- GIT_USER_NAME=${GIT_USER_NAME}
+      #- GIT_USER_EMAIL=${GIT_USER_EMAIL}
+      #- PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME}
+      #- PUBLIC_KEY_NAME=${PUBLIC_KEY_NAME}
+      #- SSH_PUBLIC_KEY=${SSH_PUBLIC_KEY}
+      #- SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
+      #- GIT_HOST=${GIT_HOST}
     volumes: &volumes
       - ./workspace:/home/workspace:cached
-      #- ./tools:/home/tools
       - ./tasks:/home/tasks
-      #- ./keys:/home/${USER_NAME}/.ssh
-      - ./keys:/home/openvscode-server/.ssh
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
+      - ${HOME}/.gitconfig:/home/workspace/.gitconfig:cached
+      - ${HOME}/.ssh:/home/openvscode-server/.ssh:cached
+      #- type: bind
+      #  source: /var/run/docker.sock
+      #  target: /var/run/docker.sock
     init: true
     restart: unless-stopped
 
