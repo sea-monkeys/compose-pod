@@ -13,8 +13,8 @@ echo "⏳ Clone git repository..."
 echo "⏳ Setting up Oh My Bash..."
 /home/tasks/oh-my-bash.sh
 
-#echo "⏳Installing extensions..."
-#/home/tasks/extensions.sh
+echo "⏳Installing extensions..."
+/home/tasks/extensions.sh
 
 echo "🎉 All setup scripts completed successfully!"
 
